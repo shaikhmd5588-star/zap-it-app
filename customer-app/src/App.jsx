@@ -37,6 +37,8 @@ export default function App() {
   const [payment, setPayment] = useState('Cash on delivery');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [completedOrderTotal, setCompletedOrderTotal] = useState(0);
+  const [completedOrderPayment, setCompletedOrderPayment] = useState('Cash on delivery');
   const [saved, setSaved] = useState([]);
   const count = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = products.reduce((sum, p) => sum + p.price * (cart[p.id] || 0), 0);
@@ -56,6 +58,8 @@ export default function App() {
   const startOrder = () => {
     if (!count) return;
     setOrderNumber('ZP' + Math.floor(100000 + Math.random() * 900000));
+    setCompletedOrderTotal(subtotal + delivery);
+    setCompletedOrderPayment(payment);
     setOrderPlaced(true);
     setShowCheckout(false);
     setCart({});
@@ -90,7 +94,7 @@ export default function App() {
 
       {tab === 'Cart' && <><PageTitle eyebrow="YOUR BAG" title="The good stuff." subtitle={count ? count + ' item' + (count === 1 ? '' : 's') + ' in your bag' : 'Your bag is taking a little breather.'}/>{count ? <><div className="cart-list">{products.filter(p => cart[p.id]).map(p => <CartRow key={p.id} product={p} qty={cart[p.id]} onChange={changeQty}/>)}</div><Bill subtotal={subtotal} delivery={delivery}/><button className="primary-button full-button" onClick={() => setShowCheckout(true)}>Continue to checkout <ArrowRight size={17}/></button></> : <EmptyCart onBrowse={() => switchTab('Home')}/>}</>}
 
-      {tab === 'Orders' && <><PageTitle eyebrow="YOUR ORDERS" title={orderPlaced ? 'Order received.' : 'Your orders'} subtitle={orderPlaced ? 'Your demo order has been created on this device.' : 'Your recent orders will show up here.'}/>{orderPlaced ? <div className="order-card"><div className="order-success"><Check size={22}/></div><div className="order-info"><span className="status-pill">DEMO ORDER · PLACED</span><h3>Order {orderNumber}</h3><p>{money(subtotal)} · {payment}</p><small>This is a local prototype only. No store has received this order.</small></div></div> : <EmptyCart onBrowse={() => switchTab('Home')} label="No orders yet" description="When you place an order, you’ll find its status here."/>}</>}
+      {tab === 'Orders' && <><PageTitle eyebrow="YOUR ORDERS" title={orderPlaced ? 'Order received.' : 'Your orders'} subtitle={orderPlaced ? 'Your demo order has been created on this device.' : 'Your recent orders will show up here.'}/>{orderPlaced ? <div className="order-card"><div className="order-success"><Check size={22}/></div><div className="order-info"><span className="status-pill">DEMO ORDER · PLACED</span><h3>Order {orderNumber}</h3><p>{money(completedOrderTotal)} · {completedOrderPayment}</p><small>This is a local prototype only. No store has received this order.</small></div></div> : <EmptyCart onBrowse={() => switchTab('Home')} label="No orders yet" description="When you place an order, you’ll find its status here."/>}</>}
 
       {tab === 'Account' && <><PageTitle eyebrow="YOUR ZAP IT" title="Hello there." subtitle="Your essentials, your way."/><div className="account-card"><div className="account-avatar"><UserRound size={24}/></div><div><strong>Guest shopper</strong><p>Sign-in will be added in a later stage.</p></div></div><div className="settings-list"><button onClick={() => setAddress(address.startsWith('Home') ? 'Work · Nandurbar' : 'Home · Nandurbar')}><MapPin size={18}/> Delivery address <span>{address}<ChevronDown size={14}/></span></button><button onClick={() => switchTab('Orders')}><PackageCheck size={18}/> Your orders <ArrowRight size={16}/></button><button onClick={() => alert('Help and support will be connected before launch.')}><ShieldCheck size={18}/> Help & support <ArrowRight size={16}/></button></div><p className="prototype-note">Stage 1 prototype · Sample prices and products · Not accepting real orders.</p></>}
     </main>
