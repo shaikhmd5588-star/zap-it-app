@@ -1,7 +1,7 @@
 {
   "name": "zap-it-customer-app",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@capacitor/core": "^6.2.0",
+    "@supabase/supabase-js": "^2.57.0",
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^6.0.7",
     "react": "^18.3.1",
