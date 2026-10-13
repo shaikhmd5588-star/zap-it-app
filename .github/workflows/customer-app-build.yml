@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - "stage-1/**"
+      - "stage-2/**"
+      - "stage-3/**"
     paths:
       - "customer-app/**"
       - ".github/workflows/customer-app-build.yml"
