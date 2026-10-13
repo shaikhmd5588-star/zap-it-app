@@ -1,0 +1,44 @@
+name: ZAP IT customer app build
+
+on:
+  push:
+    branches:
+      - main
+      - "stage-1/**"
+    paths:
+      - "customer-app/**"
+      - ".github/workflows/customer-app-build.yml"
+  pull_request:
+    paths:
+      - "customer-app/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-customer-app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: customer-app
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: customer-app/package.json
+      - name: Install dependencies
+        run: npm install
+      - name: Build customer app
+        run: npm run build
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-it-customer-app-web
+          path: customer-app/dist/
+          if-no-files-found: error
+          retention-days: 7
