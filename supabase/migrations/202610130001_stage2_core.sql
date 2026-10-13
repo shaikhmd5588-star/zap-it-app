@@ -198,6 +198,10 @@ begin
     raise exception 'Cart is empty';
   end if;
   if jsonb_array_length(p_items) > 40 then raise exception 'Too many distinct items'; end if;
+  if (select count(*) from jsonb_array_elements(p_items)) <>
+     (select count(distinct value ->> 'product_id') from jsonb_array_elements(p_items)) then
+    raise exception 'Cart contains a duplicate product';
+  end if;
 
   select * into v_address from public.addresses
   where addresses.id = p_address_id and addresses.user_id = v_user_id;
