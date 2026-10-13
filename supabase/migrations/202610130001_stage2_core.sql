@@ -132,7 +132,8 @@ alter table public.order_items enable row level security;
 create policy "Profiles: read own or admin" on public.profiles
 for select to authenticated using (id = (select auth.uid()) or public.is_admin());
 create policy "Profiles: update own basic fields" on public.profiles
-for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+for update to authenticated using (id = (select auth.uid()))
+with check (id = (select auth.uid()) and role = 'customer');
 create policy "Profiles: admin full access" on public.profiles
 for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
