@@ -1,0 +1,43 @@
+name: ZAP IT admin dashboard build
+
+on:
+  push:
+    branches:
+      - "stage-4/**"
+    paths:
+      - "admin-app/**"
+      - ".github/workflows/admin-app-build.yml"
+  pull_request:
+    paths:
+      - "admin-app/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-admin-dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin-app
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: admin-app/package.json
+      - name: Install dependencies
+        run: npm install
+      - name: Build admin dashboard
+        run: npm run build
+      - name: Upload dashboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-it-admin-dashboard
+          path: admin-app/dist/
+          if-no-files-found: error
+          retention-days: 7
